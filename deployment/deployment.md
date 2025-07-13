@@ -7,6 +7,9 @@
   - [ONNX Runtime](#onnx-runtime)
     - [本地终端部署推理](#本地终端部署推理)
     - [安卓手机部署推理](#安卓手机部署推理)
+  - [LiteRT](#litert)
+    - [Intro](#intro)
+    - [ONNX + ONNX Runtime vs. LiteRT](#onnx--onnx-runtime-vs-litert)
 
 ## Introduction
 
@@ -14,11 +17,15 @@
 * 设备：pc, 手机, 服务器, 微信小程序, 嵌入式开发板, 树莓派, 无人机, 物联网设备等
 * 特性：本地终端、快速实时、数据隐私、硬件多样化、但算力薄弱
 
-PyTorch模型部署通用流程：
-1. 模型训练（based on PyTorch, tensorflow, paddlepaddle, etc）
-2. 模型转换为**中间表示**（e.g., **ONNX**, tensorflow Lite, Qualcomm DLC）（桥梁）
-   1. ONNX极大地降低了部署的复杂度，统一了标准吧
-3. 将ONNX放在推理框架/引擎/后端上（e.g., ONNX Runtime(PC, Android), TensorRT, OpenVINO, etc.）
+**深度学习模型部署通用流程：**
+1. 模型训练
+   1. based on training frameworks such as PyTorch, TensorFlow, paddlepaddle, etc.
+2. 模型转换为**中间表示**(intermediate representation, IR)
+   1. e.g., **ONNX**, **tensorflow Lite (i.e., `.tflite`file)**, Qualcomm DLC, 作为中间桥梁
+   2. 其中ONNX极大地降低了部署的复杂度，统一了表示深度学习模型的标准；打破了不同训练框架之间的壁垒
+3. 模型部署到不同目标硬件平台
+   1. 将中间表示的模型部署到具体的硬件平台(e.g., NVIDIA, Qualcomm, Apple..)； 
+   2. 硬件厂商会提供专门的推理引擎或运行时(Runtime)，如通用的ONNX Runtime，NVIDIA的TensorRT，Intel的OpenVINO, Tencent的NCNN...
 
 > 之所以探索出这样一条路径：1. 配置和依赖环境不适合在手机、开发板等生产环境中安装； 2. DL模型比较庞大，需要庞大的算力，也即运行效率需要优化。
 
@@ -100,7 +107,6 @@ A: 因为PyTorch在导出ONNX时，会将动态图“静态化”：即捕获一
 TODO
 
 
-
 ## ONNX Runtime
 
 ### 本地终端部署推理
@@ -124,7 +130,7 @@ outputs = ort_session.run(
 
 > 同样，你可以推理视频，或者推理摄像头实时视频流
 
-**PyTorch原模型推理(`.pth`) vs. ONNX Runtime推理(`.onnx`)**
+==**PyTorch原模型推理(`.pth`) vs. ONNX Runtime推理(`.onnx`)**==
 
 * 依赖环境不同：前者需要安装PyTorch，后者只需要安装ONNX Runtime
 * 前者需要手动构造model, 加载weights，后者已经将模型和权重打包到`.onnx`文件中
@@ -147,3 +153,31 @@ outputs = ort_session.run(
 
 > 示例demo项目：[link](https://github.com/microsoft/onnxruntime-inference-examples/tree/main/mobile/examples/image_classification/android)
 
+## LiteRT
+
+### Intro
+
+LiteRT (Lite Runtime, 是TensorFlow Lite的升级版本): 是google推出的面向设备端AI的高性能**运行时**(runtime)。 
+> 奇怪的翻译? 其实就是运行模型的工具/模型推理引擎。
+
+* 多平台支持: android, iOS, 嵌入式Linux, etc.
+* 多训练框架支持：TensorFlow, PyTorch, JAX, etc. 由AI Edge的工具将上述模型转换为FlatBuffers格式(i.e., `.tflite` file)。
+
+### ONNX + ONNX Runtime vs. LiteRT
+
+大概是两条技术路线吧：
+
+ONNX + ONNX Runtime: PyTorch/TensorFlow/.. -> `.onnx` file -> ONNX Runtime
+
+LiteRT: PyTorch/TensorFlow/.. -> `.tflite` file -> LiteRT
+
+核心区别：
+
+* ONNX + ONNX Runtime: 通用与灵活
+  * 可以理解为type-C充电口 + 万能充电器
+* LiteRT: 专用与高效
+
+* 生态
+  * onnx: **开放标准**，由微软、Facebook和亚马逊等公司共同推动，促进不同框架与硬件之间的自由流通。
+  * TFLite: Google亲儿子。主要围绕Tensorflow，主攻移动设别(尤其是Android)和嵌入式设备。
+* 
