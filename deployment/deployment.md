@@ -10,6 +10,7 @@
   - [LiteRT](#litert)
     - [Intro](#intro)
     - [ONNX + ONNX Runtime vs. LiteRT](#onnx--onnx-runtime-vs-litert)
+    - [实践](#实践)
 
 ## Introduction
 
@@ -22,10 +23,11 @@
    1. based on training frameworks such as PyTorch, TensorFlow, paddlepaddle, etc.
 2. 模型转换为**中间表示**(intermediate representation, IR)
    1. e.g., **ONNX**, **tensorflow Lite (i.e., `.tflite`file)**, Qualcomm DLC, 作为中间桥梁
+      1. 说`.onnx`是中间桥梁没啥毛病（跨框架的通用标准），但`.tflite`严格来说是TensorFlow生态内部的一种中间表示，Qualcomm DLC也类似吧。
    2. 其中ONNX极大地降低了部署的复杂度，统一了表示深度学习模型的标准；打破了不同训练框架之间的壁垒
 3. 模型部署到不同目标硬件平台
    1. 将中间表示的模型部署到具体的硬件平台(e.g., NVIDIA, Qualcomm, Apple..)； 
-   2. 硬件厂商会提供专门的推理引擎或运行时(Runtime)，如通用的ONNX Runtime，NVIDIA的TensorRT，Intel的OpenVINO, Tencent的NCNN...
+   2. 硬件厂商会提供专门的推理引擎或运行时(Runtime)，如通用的ONNX Runtime，google的**LiteRT**, NVIDIA的TensorRT，Intel的OpenVINO, Tencent的NCNN, Alibaba的**MNN**...
 
 > 之所以探索出这样一条路径：1. 配置和依赖环境不适合在手机、开发板等生产环境中安装； 2. DL模型比较庞大，需要庞大的算力，也即运行效率需要优化。
 
@@ -34,6 +36,18 @@
 
 ---
 
+补充部署架构的三种常见模式：
+
+| 项目           | 纯云端（Cloud-only）            | 云端 + SDK（半端侧, Hybrid） | 纯端侧（on-device）       |
+| -------------- | ----------------- | -------------------- | -------------------- |
+| 网络依赖       | 强                | 中等                 | 无                   |
+| 隐私保护       | 弱                | 一般                 | 强                   |
+| 推理速度       | 慢（依赖网络）    | 中                   | 快（本地）           |
+| 模型大小限制   | 无限制            | 有限制               | 有严格限制           |
+| 使用门槛       | 简单              | 简单                 | 高（需量化/压缩等）  |
+| 应用场景和原因 | 大模型、高算力场景，适合复杂任务 | 需要兼顾算力和接入便捷，常用于语音识别、OCR等 | 隐私敏感和实时响应要求高，如语音助手、AR、人脸解锁 |
+
+---
 ## ONNX
 
 ONNX: Open Neural Network Exchange
@@ -157,11 +171,24 @@ outputs = ort_session.run(
 
 ### Intro
 
-LiteRT (Lite Runtime, 是TensorFlow Lite的升级版本): 是google推出的面向设备端AI的高性能**运行时**(runtime)。 
+LiteRT (short for **Lite Runtime**, is the new name for **TensorFlow Lite** (TFLite)): 是google推出的面向设备端AI的高性能**运行时**(runtime)。 
 > 奇怪的翻译? 其实就是运行模型的工具/模型推理引擎。
 
-* 多平台支持: android, iOS, 嵌入式Linux, etc.
-* 多训练框架支持：TensorFlow, PyTorch, JAX, etc. 由AI Edge的工具将上述模型转换为FlatBuffers格式(i.e., `.tflite` file)。
+
+特性：
+
+* 针对设备端侧机器学习(**On-Device Machine Learning, ODML**)进行了优化解决了五项**ODML constrains**:
+  * 时延latency: 本地推理，不将数据回传到云端，故而无需往返服务器时延
+  * 隐私Privacy: 本地推理，数据不离开设备
+  * 网络依赖Connectivity: 必须在离线下正常运行
+  * 体积Size: 缩减了model和binary的大小
+  * 功耗Power Consumption: 低功耗运行，适合移动设备
+* 多平台支持: android, iOS, embeded Linux, etc.
+* 多训练框架支持：TensorFlow, PyTorch, JAX, Keras, etc. 由AI Edge的工具将上述模型转换为FlatBuffers格式(i.e., `.tflite` file)。
+  * 原本是为了TensorFlow原生的，现在支持了更多框架
+
+
+> LiteRT, part of the [Google AI Edge](https://ai.google.dev/edge) suite of tools, is the runtime that lets you seamlessly deploy ML and AI models on Android, iOS, and embedded devices. 
 
 ### ONNX + ONNX Runtime vs. LiteRT
 
@@ -180,4 +207,6 @@ LiteRT: PyTorch/TensorFlow/.. -> `.tflite` file -> LiteRT
 * 生态
   * onnx: **开放标准**，由微软、Facebook和亚马逊等公司共同推动，促进不同框架与硬件之间的自由流通。
   * TFLite: Google亲儿子。主要围绕Tensorflow，主攻移动设别(尤其是Android)和嵌入式设备。
-* 
+
+### 实践
+

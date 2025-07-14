@@ -6,6 +6,8 @@
       - [SoC Manufacturer](#soc-manufacturer)
       - [CPU](#cpu)
       - [GPU](#gpu)
+      - [NPU](#npu)
+        - [NPU在手机中的应用](#npu在手机中的应用)
       - [PCB (Printed Circuit Board)](#pcb-printed-circuit-board)
     - [RAM](#ram)
     - [ROM](#rom)
@@ -64,12 +66,46 @@ SoC芯片：含有多个功能块，如CPU, GPU, NPU, 共享内存Memory Cache, 
 
 #### CPU
 
-CPU(Central Processing Unit)主处理器，手机的大脑/核心。
-常见品牌: 高通Qualcomm, Apple A系列, 三星Samsung, 联发科Dimensity等
+CPU(Central Processing Unit)主处理器，手机的**大脑**/核心。负责执行操作系统、应用程序的指令，处理通用计算任务、逻辑控制、数据调度等。
+* **通用性强**，什么都能干，**但不见得每件事都最快**。
+* 举例： 高通骁龙Kryo核心、苹果A系列芯片中的CPU核心、联发科天玑Cortex核心。
 
 #### GPU
 
-GPU (Graphics Processing Unit) 图形处理器，负责处理图形和图像相关的计算任务，常用于游戏、动画和渲染等。
+GPU (Graphics Processing Unit) 图形处理器，手机的“**视觉引擎**”，主要负责图像和视频的渲染、处理。它擅长**并行处理大量的简单重复运算**。
+
+* 高度并行化，非常适合图形渲染、视频编解码、游戏
+* 浮点运算能力强
+* 举例： 高通骁龙Adreno GPU、苹果A系列芯片中的GPU核心、ARM Mali GPU。
+
+#### NPU
+
+NPU (Neural Processing Unit) 神经网络处理器，手机的“**AI大脑**”，专门用于加速AI和ML任务。主要负责执行**神经网络模型的推理运算**。
+
+==**为何SoC有了CPU和GPU还需要NPU？**==
+
+* 神经网络计算的核心是大量的矩阵乘法和卷积运算，这些运算是高度并行的，但又**不完全等同于GPU擅长的图形渲染**。
+* **功耗**：如果所有的AI任务都交给CPU或GPU来处理，功耗会非常大。**专门设计的NPU执行AI任务时功耗远低于二者**，符合手机对续航的极高要求。
+
+> 其实电脑也正在集成NPU/独立AI加速卡(e.g., google的TPU)
+
+##### NPU在手机中的应用
+
+* 计算摄影
+  * AI场景识别： 自动识别拍摄场景（如美食、人像、夜景），并优化参数。
+  * 人像模式/虚化： 精准识别人物边缘并进行背景虚化。
+  * 超级夜景：多帧合成，降噪，提升暗光照片质量。
+  * AI美颜： 自然地优化面部特征。
+  * image super-resolution, image inpainting, etc.
+* 语音识别与处理：
+  * 智能语音助手： 离线语音识别，提高响应速度和准确性。
+  * 实时翻译： 加速语音和文本翻译。
+* 人脸识别与解锁：
+  * 3D人脸识别： 实现更安全、快速的解锁。
+  * 表情识别： 应用于AR表情、虚拟形象等。
+* AR/VR应用：
+  * 手势识别： 识别用户手势进行交互。
+
 
 #### PCB (Printed Circuit Board)
 
