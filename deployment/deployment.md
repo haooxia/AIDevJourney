@@ -10,7 +10,7 @@
   - [LiteRT](#litert)
     - [Intro](#intro)
     - [ONNX + ONNX Runtime vs. LiteRT](#onnx--onnx-runtime-vs-litert)
-    - [实践](#实践)
+  - [Summary of On-device Machine Learning](#summary-of-on-device-machine-learning)
 
 ## Introduction
 
@@ -208,5 +208,21 @@ LiteRT: PyTorch/TensorFlow/.. -> `.tflite` file -> LiteRT
   * onnx: **开放标准**，由微软、Facebook和亚马逊等公司共同推动，促进不同框架与硬件之间的自由流通。
   * TFLite: Google亲儿子。主要围绕Tensorflow，主攻移动设别(尤其是Android)和嵌入式设备。
 
-### 实践
+## Summary of On-device Machine Learning
 
+1. 硬件厂商提供的原生SDK
+   1. Qualcomm: Qualcomm AI Engine Direct SDK（通常称为Qualcomm Neural Network (QNN)）
+      1. model转为QNN支持的格式 -> 利用高通的AI Model Efficiency Toolkit - AIMET对模型深度量化 -> 在APP中集成QNN Runtime，加载转换后的模型
+      2. 与Qualcomm深度绑定，无法在MTK或其他芯片运行
+   2. MTK: MediaTek NeuroPilot SDK
+      1. 类似地，要将model转为自家格式，有厂商锁定问题
+   3. **性能天花板**，原生SDK可以榨干硬件性能，开发维护成本极高
+2. 通用推理框架
+   1. LiteRT: 面向Android
+      1. 开发维护效率极高，平台解耦，生态成熟
+   2. ONNX Runtime (QRT): 通用型
+      1. 将mode转为.onnx，然后集成到ONNX Runtime中。业界标准，支持广泛。
+3. 专为LLM优化的新兴推理库
+   1. llama.cpp: LLM在CPU上的最佳实践，资源占用极低	主要面向CPU，对NPU/GPU支持有限
+
+![picture 1](../images/b83ad4a18eeade376cb91535e6269f81f0bcdb75b4bfab4ae3d0fa5da222512f.png)  
