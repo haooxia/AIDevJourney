@@ -2,13 +2,12 @@
 
 
 * gemma是google发布的轻量级开源LLM
-* Orin 平台（NVIDIA）： Orin 是 NVIDIA 设计的一系列高性能、低功耗的 AI 加速平台，常用于数据中心、边缘设备和自动驾驶等场景。
 * LiteRT-LM是一个C++库，旨在高效地在各种设备（从手机到嵌入式系统）上运行语言模型流水线。
 * Bazel是google开发的构建工具(build system)
 * QAIRT: QAIRT是连接“AI模型”和“高通硬件（NPU）”之间的桥梁。
 * QAIRT SDK: Qualcomm AI Runtime SDK
 * Android NDK: native development kit for android, 是一个工具集，允许你使用 C 或 C++ 语言 为 Android 开发应用的一部分（比如性能要求高的模块）。是Android SDK(java/kotlin写的)的扩展。
-* 高通8635 本质上是 SM8750 的降频/定制版，也就是 Snapdragon 8 Gen 2 的一个变种。架构和指令集完全兼容。核心布局、NPU、GPU 等模块几乎一致，只是主频略低。
+<!-- * 高通8635 本质上是 SM8750 的降频/定制版，也就是 Snapdragon 8 Gen 2 的一个变种。架构和指令集完全兼容。核心布局、NPU、GPU 等模块几乎一致，只是主频略低。 -->
 
 ---
 

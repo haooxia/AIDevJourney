@@ -1,5 +1,15 @@
 # LLM Models Overview
 
+- [LLM Models Overview](#llm-models-overview)
+  - [Basic Knowledge](#basic-knowledge)
+    - [LLM Inference Process](#llm-inference-process)
+      - [prefill phase](#prefill-phase)
+      - [decode phase](#decode-phase)
+      - [related metrics](#related-metrics)
+  - [gemma-3n](#gemma-3n)
+  - [qwen3](#qwen3)
+
+
 ## Basic Knowledge
 
 ### LLM Inference Process
@@ -34,12 +44,15 @@
 
 prefill:
 
-* TTFT: Time To First Token, 即从用户输入prompt到生成第一个token的时间
+* **TTFT: Time To First Token**, 即从用户输入prompt到生成第一个token的时间
   * prefill latency (ms): TTFT的另一种说法吧
-* prefill speed (tokens/sec): 每秒能处理多少个输入token
+  * ttft越长，用户等待时间越长，体验越差
+* prefill speed/rate (tokens/sec): 每秒能处理多少个输入token
 
 decode:
 * decode speed (tokens/sec): 每秒能生成多少个输出token
+* TPS(TPOT): Tokens Per Second / Tokens Per Output Time，即模型生成token的速度
+  * 跟decode speed一样吧
 
 ---
 
@@ -71,3 +84,13 @@ Gemma 3n models are designed for efficient execution on everyday devices such as
 
 
 E4B模型内嵌E2B模型，当question easy时候，会自动使用E2B快速得到模型，当hard时候，会自动使用E4B模型来得到deep analysis
+
+> Gemma3 is different from Gemma3n
+
+## qwen3
+
+qwen3是Qwen系列中最新一代的llm，特性如下：
+* 全尺寸稠密特性comprehensive suite of dense：提供0.6b, 1.7b, 4b, 8b, 14b, 30b, 32b, 235b版本
+  * Dense model是每次推理会激活模型的所有参数
+* 混合专家模型mixture-of-experts (MoE)特性: MoE核心思想是并非每次都用全部模型参数，而是根据输入选择部分“专家”模型来处理，以节省资源。
+  * 每次处理输入时，一个router/路由器根据input，选择其中少数几个专家(e.g., 2)来处理，输出是选中专家的输出加权。

@@ -8,6 +8,8 @@
       - [GPU](#gpu)
       - [NPU](#npu)
         - [NPU在手机中的应用](#npu在手机中的应用)
+        - [CDSP (QC)](#cdsp-qc)
+      - [DSP](#dsp)
       - [PCB (Printed Circuit Board)](#pcb-printed-circuit-board)
     - [RAM](#ram)
     - [ROM](#rom)
@@ -89,6 +91,9 @@ NPU (Neural Processing Unit) 神经网络处理器，手机的“**AI大脑**”
 
 > 其实电脑也正在集成NPU/独立AI加速卡(e.g., google的TPU)
 
+NPU frequence: NPU的时钟频率，以MHz或GHz为单位。
+* NPU频率越高，意味着NPU每秒能处理的数据越多，AI匀速那速度越快。e.g., NPU频率为800MHz，说明NPU每秒钟可进行8亿次的基本运算周期
+
 ##### NPU在手机中的应用
 
 * 计算摄影
@@ -106,6 +111,26 @@ NPU (Neural Processing Unit) 神经网络处理器，手机的“**AI大脑**”
 * AR/VR应用：
   * 手势识别： 识别用户手势进行交互。
 
+##### CDSP (QC)
+
+高通CDSP： Compute Digital Signal Processor，在高通芯片中有时也称为HVX或Hexagon DSP。
+
+对于SM8750而言，你在SoC中看不到一个显式叫"NPU"的模块，但Hexagon DSP + Tensor Accelerator本质上就是高通的NPU实现。即CDSP承担了NPU的功能。
+
+所以对于这类机器(没有独立的NPU)而言，我们可以认为CDSP就是NPU。
+
+* Burst爆发模式：CDSP短时间内以其最高或接近最高性能运行，能迅速完成特定任务。
+* Balence平衡模式：CDSP在功耗、散热和持续性能之间找到一个最佳平衡点
+
+频率（时钟速度）是衡量性能的一个重要指标：处理器每秒执行的时钟周期数，单位MHz或GHz。
+理论上，频率越高，处理器在单位时间内执行的指令越多，因此性能越强。
+
+所以在测试llm的prefill speed/decode speed时候，应该在burst和balance两种模式下进行测试，得到更为全面的性能画像。
+
+#### DSP
+
+DSP (Digital Signal Processor) 数字信号处理器
+和通用CPU相比，它在执行数学运算、实时处理等方面更高效，特别适用于音频、视频、图像、雷达、通信、控制系统等领域。
 
 #### PCB (Printed Circuit Board)
 
@@ -117,6 +142,11 @@ PCB硬刷电路板是一切电子元器件的载体，它将**SoC芯片**、内�
 ### RAM 
 
 RAM (Random Access Memory) 随机存取存储器，**暂存**当前正在运行的数据和程序。
+
+DDR: Double Date Rate Synchronous Dynamic RAM （双倍数据率同步动态随机存取存储器）
+
+DDR frequence: 内存的时钟频率，以MHz或GHz为单位。
+* DDR频率越高，意味着内存传输速度越快，数据读取和写入效率更高
 
 ### ROM
 
@@ -138,6 +168,8 @@ ROM (Read-Only Memory) 只读存储器，**永久存储**手机的**操作系统
 ### Battery
 
 电池是手机的主要电源供应设备。
+
+Power Efficiency（功耗）: 手机的功耗效率，通常以mAh（毫安时）或Wh（瓦时）来衡量。
 
 ### Other
 
