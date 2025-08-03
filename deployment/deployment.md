@@ -16,10 +16,10 @@
   - [Summary of On-device Machine Learning](#summary-of-on-device-machine-learning)
 
 
-
-> Reference
+> Reference:
 > * 模型部署入门视频教程: [link](https://www.bilibili.com/video/BV1cM4y187Xc/?share_source=copy_web&vd_source=b576499af9e9962cb710c58072253ab6)
 > * 模型部署系列教程：[link](https://zhuanlan.zhihu.com/c_1497987564452114432)
+> * https://github.com/datawhalechina/llm-deploy
 
 
 > LiteRT相关笔记参考：[link](https://github.com/haooxia/AIDevJourney/blob/main/deployment/litert.md)
